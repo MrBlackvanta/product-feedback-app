@@ -1,0 +1,10 @@
+@import "tailwindcss";
+@source not "../../*.md";
+@source not "../../../*.md";
+@source not "../**/*.test.ts";
+@source not "../**/*.test.tsx";
+@source not "../../tests";
+
+@theme {
+  --font-sans: var(--font-jost), sans-serif;
+}

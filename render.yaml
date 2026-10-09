@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: vanta-feedback-api
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /health
+    buildFilter:
+      paths:
+        - backend/**
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: Cors__AllowedOrigins__0
+        value: https://product-feedback-app.abdelrhman-ahmed8881.workers.dev
+      - key: Database__Schema
+        value: feedback
+      - key: ConnectionStrings__Default
+        sync: false
+      - key: Migrations__Apply
+        sync: false
