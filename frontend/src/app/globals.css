@@ -7,4 +7,55 @@
 
 @theme {
   --font-sans: var(--font-jost), sans-serif;
+
+  --color-ink: #3a4374;
+  --color-ink-strong: #373f68;
+  --color-ink-muted: #647196;
+
+  --color-page: #f7f8fd;
+  --color-surface: #ffffff;
+  --color-outline: #cdd2ee;
+
+  --color-accent: #ad1fea;
+  --color-accent-hover: #c75af6;
+  --color-action: #4661e6;
+  --color-action-hover: #7c91f9;
+  --color-action-tint: #f2f4ff;
+  --color-action-tint-hover: #cfd7ff;
+  --color-neutral-hover: #656ea3;
+  --color-danger: #d73737;
+  --color-danger-hover: #e98888;
+
+  --color-status-planned: #f49f85;
+  --color-status-progress: #ad1fea;
+  --color-status-live: #62bcfa;
+
+  --text-h1: 1.5rem;
+  --text-h1--line-height: 2.1875rem;
+  --text-h1--letter-spacing: -0.0139em;
+  --text-h2: 1.25rem;
+  --text-h2--line-height: 1.8125rem;
+  --text-h2--letter-spacing: -0.0125em;
+  --text-h3: 1.125rem;
+  --text-h3--line-height: 1.625rem;
+  --text-h3--letter-spacing: -0.0139em;
+  --text-h4: 0.875rem;
+  --text-h4--line-height: 1.25rem;
+  --text-h4--letter-spacing: -0.0139em;
+  --text-wordmark: 0.9375rem;
+  --text-wordmark--line-height: 1.375rem;
+  --text-wordmark--letter-spacing: -0.0125em;
+  --text-body-1: 1rem;
+  --text-body-1--line-height: 1.4375rem;
+  --text-body-2: 0.9375rem;
+  --text-body-2--line-height: 1.375rem;
+  --text-body-3: 0.8125rem;
+  --text-body-3--line-height: 1.1875rem;
+
+  --radius-card: 0.625rem;
+  --radius-field: 0.3125rem;
+}
+
+html {
+  overflow-y: scroll;
 }
