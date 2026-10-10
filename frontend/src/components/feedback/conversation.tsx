@@ -231,15 +231,15 @@ export default function Conversation({
           author: viewer,
           to: { commentId, username },
         },
-        () => postReply(id, commentId, username, content),
+        () => postReply(commentId, username, content),
       ),
     edit: (scope, entryId, content) =>
       run({ act: "edit", scope, id: entryId, content }, () =>
-        editEntry(id, scope, entryId, content),
+        editEntry(scope, entryId, content),
       ),
     remove: (scope, entryId) =>
       run({ act: "delete", scope, id: entryId }, () =>
-        removeEntry(id, scope, entryId),
+        removeEntry(scope, entryId),
       ),
   };
 

@@ -1,9 +1,15 @@
 "use server";
 
 import { isCategory, isStatus, type Category, type Status } from "@/data";
-import { updateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { API_URL, FEEDBACK_TAG, feedbackTag } from "./api";
+import { API_URL } from "./api";
+
+const ALREADY_GONE = 404;
+
+function refreshEveryView() {
+  revalidatePath("/", "layout");
+}
 
 async function send(method: string, path: string, body?: unknown) {
   const response = await fetch(`${API_URL}${path}`, {
@@ -20,23 +26,27 @@ async function send(method: string, path: string, body?: unknown) {
   return response;
 }
 
-function refresh(id: number) {
-  updateTag(FEEDBACK_TAG);
-  updateTag(feedbackTag(id));
+async function sendDelete(path: string) {
+  const response = await fetch(`${API_URL}${path}`, { method: "DELETE" });
+
+  if (!response.ok && response.status !== ALREADY_GONE) {
+    throw new Error(`DELETE ${path} responded ${response.status}`);
+  }
 }
 
 export async function castUpvote(id: number, delta: 1 | -1) {
   await send("POST", `/api/feedback/${id}/upvote`, { delta });
-  refresh(id);
+
+  refreshEveryView();
 }
 
 export async function postComment(id: number, content: string) {
   await send("POST", `/api/feedback/${id}/comments`, { content });
-  refresh(id);
+
+  refreshEveryView();
 }
 
 export async function postReply(
-  id: number,
   commentId: number,
   replyingTo: string,
   content: string,
@@ -45,7 +55,8 @@ export async function postReply(
     content,
     replyingTo,
   });
-  refresh(id);
+
+  refreshEveryView();
 }
 
 const ENTRY_PATH = { comment: "comments", reply: "replies" } as const;
@@ -63,22 +74,19 @@ function entryPath(scope: EntryScope, entryId: number) {
 }
 
 export async function editEntry(
-  id: number,
   scope: EntryScope,
   entryId: number,
   content: string,
 ) {
   await send("PATCH", entryPath(scope, entryId), { content });
-  refresh(id);
+
+  refreshEveryView();
 }
 
-export async function removeEntry(
-  id: number,
-  scope: EntryScope,
-  entryId: number,
-) {
-  await send("DELETE", entryPath(scope, entryId));
-  refresh(id);
+export async function removeEntry(scope: EntryScope, entryId: number) {
+  await sendDelete(entryPath(scope, entryId));
+
+  refreshEveryView();
 }
 
 export async function createFeedback(
@@ -97,7 +105,6 @@ export async function createFeedback(
   });
   const created = (await response.json()) as { id: number };
 
-  updateTag(FEEDBACK_TAG);
   redirect(`/feedback/${created.id}`);
 }
 
@@ -119,13 +126,11 @@ export async function updateFeedback(
     description,
   });
 
-  refresh(id);
   redirect(`/feedback/${id}`);
 }
 
 export async function deleteFeedback(id: number) {
-  await send("DELETE", `/api/feedback/${id}`);
+  await sendDelete(`/api/feedback/${id}`);
 
-  refresh(id);
   redirect("/");
 }

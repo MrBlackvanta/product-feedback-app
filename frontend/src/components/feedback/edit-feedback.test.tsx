@@ -131,6 +131,38 @@ describe("EditFeedbackForm", () => {
     expect(removed).toHaveBeenCalledWith(7);
   });
 
+  it("holds the dialog open and explains when the delete is refused", async () => {
+    removed.mockRejectedValue(new Error("offline"));
+    renderForm();
+
+    await userEvent.click(screen.getByRole("button", { name: "Delete" }));
+    await userEvent.click(
+      within(screen.getByRole("dialog")).getByRole("button", {
+        name: "Delete Request",
+      }),
+    );
+
+    const dialog = screen.getByRole("dialog");
+
+    expect(await within(dialog).findByRole("alert")).toHaveTextContent(
+      /couldn’t delete it/i,
+    );
+    expect(
+      within(dialog).getByRole("button", { name: "Delete Request" }),
+    ).toBeEnabled();
+  });
+
+  it("explains when the save is refused", async () => {
+    saved.mockRejectedValue(new Error("offline"));
+    renderForm();
+
+    await userEvent.click(save());
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      /couldn’t save that/i,
+    );
+  });
+
   it("keeps the request when the dialog is dismissed", async () => {
     renderForm();
 

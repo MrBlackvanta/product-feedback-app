@@ -13,8 +13,15 @@ cover the seed rows. The alternatives were a query string standing in for a path
 that 404 on exactly the records the brief asks the user to create.
 
 OpenNext runs the same build as a Worker instead, so a dynamic segment resolves at request time
-and every record gets a real URL. Rendered pages are cached in R2 through the incremental cache,
-which is what keeps the API's cold start off the critical path.
+and every record gets a real URL.
+
+Board and request reads are uncached, deliberately. They are the data the app mutates, and a
+cached copy that outlives a delete is a page offering to remove a row the API no longer holds —
+which is a 500, not a stale number. What Next still caches on its own goes through the
+incremental cache, so `wrangler.jsonc` binds the R2 bucket plus two Durable Objects:
+`NEXT_CACHE_DO_QUEUE` for background revalidation and `NEXT_TAG_CACHE_DO_SHARDED` for tag
+invalidation. Leave either unbound and OpenNext substitutes a no-op, which discards every
+revalidation without an error anywhere.
 
 ## Configuration
 

@@ -305,12 +305,7 @@ describe("editing and deleting", () => {
     await user.type(editor, "Worth doing soon.");
     await user.click(screen.getByRole("button", { name: /save changes/i }));
 
-    expect(editEntry).toHaveBeenCalledWith(
-      1,
-      "comment",
-      1,
-      "Worth doing soon.",
-    );
+    expect(editEntry).toHaveBeenCalledWith("comment", 1, "Worth doing soon.");
     expect(await screen.findByText("Worth doing soon.")).toBeVisible();
 
     await saving.land();
@@ -341,7 +336,7 @@ describe("editing and deleting", () => {
     await user.click(screen.getByRole("button", { name: /^delete/i }));
     await user.click(screen.getByRole("button", { name: "Delete" }));
 
-    expect(removeEntry).toHaveBeenCalledWith(1, "comment", 1);
+    expect(removeEntry).toHaveBeenCalledWith("comment", 1);
     expect(screen.getByText(/no comments yet/i)).toBeVisible();
 
     await removing.land();

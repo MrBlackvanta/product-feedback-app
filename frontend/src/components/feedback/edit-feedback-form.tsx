@@ -22,10 +22,14 @@ type EditFeedbackFormProps = {
   feedback: Omit<Feedback, "upvotes" | "commentCount">;
 };
 
+const REMOVAL_FAILED =
+  "We couldn’t delete it. The feedback service didn’t answer, so give it a moment and try again.";
+
 export default function EditFeedbackForm({ feedback }: EditFeedbackFormProps) {
   const [category, setCategory] = useState<Category>(feedback.category);
   const [status, setStatus] = useState<Status>(feedback.status);
   const [confirming, setConfirming] = useState(false);
+  const [removalFailed, setRemovalFailed] = useState(false);
   const [removing, startRemoving] = useTransition();
 
   const {
@@ -35,6 +39,7 @@ export default function EditFeedbackForm({ feedback }: EditFeedbackFormProps) {
     detail,
     setDetail,
     errors,
+    trouble,
     attempt,
     submit,
     pending,
@@ -98,6 +103,12 @@ export default function EditFeedbackForm({ feedback }: EditFeedbackFormProps) {
           />
         </div>
 
+        {trouble && (
+          <p key={attempt} role="alert" className="v-field-error">
+            {trouble}
+          </p>
+        )}
+
         <div className="v-form-actions flex-col md:flex-row">
           <button
             type="submit"
@@ -131,8 +142,22 @@ export default function EditFeedbackForm({ feedback }: EditFeedbackFormProps) {
         confirmLabel="Delete Request"
         open={confirming}
         busy={removing}
-        onConfirm={() => startRemoving(() => deleteFeedback(feedback.id))}
-        onClose={() => setConfirming(false)}
+        trouble={removalFailed ? REMOVAL_FAILED : undefined}
+        onConfirm={() =>
+          startRemoving(async () => {
+            setRemovalFailed(false);
+
+            try {
+              await deleteFeedback(feedback.id);
+            } catch {
+              setRemovalFailed(true);
+            }
+          })
+        }
+        onClose={() => {
+          setRemovalFailed(false);
+          setConfirming(false);
+        }}
       />
     </>
   );

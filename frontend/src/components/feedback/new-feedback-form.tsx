@@ -26,6 +26,7 @@ export default function NewFeedbackForm() {
     detail,
     setDetail,
     errors,
+    trouble,
     attempt,
     submit,
     pending,
@@ -71,6 +72,12 @@ export default function NewFeedbackForm() {
           multiline
         />
       </div>
+
+      {trouble && (
+        <p key={attempt} role="alert" className="v-field-error">
+          {trouble}
+        </p>
+      )}
 
       <div className="v-form-actions flex-col-reverse md:flex-row">
         <Link href="/" className="v-btn-neutral">

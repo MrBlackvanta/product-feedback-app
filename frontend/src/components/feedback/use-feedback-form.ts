@@ -3,9 +3,12 @@
 import { useActionState, useEffect, useRef, useState } from "react";
 
 type Errors = { title?: string; detail?: string };
-type FormState = { errors: Errors; attempt: number };
+type FormState = { errors: Errors; trouble?: string; attempt: number };
 
 const INITIAL: FormState = { errors: {}, attempt: 0 };
+
+const UNREACHABLE =
+  "We couldn’t save that. The feedback service didn’t answer, so give it a moment and try again.";
 
 export default function useFeedbackForm(
   initial: { title: string; detail: string },
@@ -15,7 +18,7 @@ export default function useFeedbackForm(
   const [detail, setDetail] = useState(initial.detail);
   const form = useRef<HTMLFormElement>(null);
 
-  const [{ errors, attempt }, submit, pending] = useActionState<
+  const [{ errors, trouble, attempt }, submit, pending] = useActionState<
     FormState,
     FormData
   >(async (previous) => {
@@ -30,7 +33,11 @@ export default function useFeedbackForm(
       return { errors: found, attempt: previous.attempt + 1 };
     }
 
-    await save(headline, body);
+    try {
+      await save(headline, body);
+    } catch {
+      return { errors: {}, trouble: UNREACHABLE, attempt: previous.attempt + 1 };
+    }
 
     return INITIAL;
   }, INITIAL);
@@ -50,6 +57,7 @@ export default function useFeedbackForm(
     detail,
     setDetail,
     errors,
+    trouble,
     attempt,
     submit,
     pending,

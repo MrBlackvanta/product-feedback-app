@@ -43,7 +43,12 @@ export default function UpvoteButton({
     startTransition(async () => {
       addOptimistic(delta);
       setUpvoted(id, !mine);
-      await castUpvote(id, delta);
+
+      try {
+        await castUpvote(id, delta);
+      } catch {
+        setUpvoted(id, mine);
+      }
     });
   }
 

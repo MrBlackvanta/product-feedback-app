@@ -8,6 +8,7 @@ type DeleteDialogProps = {
   confirmLabel: string;
   open: boolean;
   busy?: boolean;
+  trouble?: string;
   onConfirm: () => void;
   onClose: () => void;
 };
@@ -18,6 +19,7 @@ export default function DeleteDialog({
   confirmLabel,
   open,
   busy,
+  trouble,
   onConfirm,
   onClose,
 }: DeleteDialogProps) {
@@ -59,6 +61,12 @@ export default function DeleteDialog({
         >
           {detail}
         </p>
+
+        {trouble && (
+          <p role="alert" className="v-field-error">
+            {trouble}
+          </p>
+        )}
 
         <div className="mt-6 flex flex-col gap-4 md:mt-8 md:flex-row md:justify-end">
           <button
