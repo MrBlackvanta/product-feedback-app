@@ -3,6 +3,7 @@ export { boardHref } from "./board-links";
 export { default as CategoryFilter } from "./category-filter";
 export { default as CategoryPill } from "./category-pill";
 export { default as CommentCount } from "./comment-count";
+export { default as EmptyFeedback } from "./empty-feedback";
 export { default as FeedbackCard } from "./feedback-card";
 export { default as RoadmapSummary } from "./roadmap-summary";
 export { default as SortBar } from "./sort-bar";

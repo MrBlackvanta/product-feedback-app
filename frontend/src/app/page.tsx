@@ -1,6 +1,7 @@
 import {
   BoardShell,
   CategoryFilter,
+  EmptyFeedback,
   FeedbackCard,
   RoadmapSummary,
   SortBar,
@@ -31,13 +32,19 @@ export default async function HomePage({ searchParams }: HomePageProps) {
     >
       <SortBar count={suggestions.length} sort={sort} category={category} />
 
-      <ol className="v-suggestion-list">
-        {suggestions.map((item) => (
-          <li key={item.id}>
-            <FeedbackCard feedback={item} />
-          </li>
-        ))}
-      </ol>
+      <div className="v-board-results">
+        {suggestions.length === 0 ? (
+          <EmptyFeedback />
+        ) : (
+          <ol className="v-suggestion-list">
+            {suggestions.map((item) => (
+              <li key={item.id}>
+                <FeedbackCard feedback={item} />
+              </li>
+            ))}
+          </ol>
+        )}
+      </div>
     </BoardShell>
   );
 }

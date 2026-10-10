@@ -41,7 +41,6 @@
   --text-h3--letter-spacing: -0.0139em;
   --text-h4: 0.875rem;
   --text-h4--line-height: 1.25rem;
-  --text-h4--letter-spacing: -0.0139em;
   --text-wordmark: 0.9375rem;
   --text-wordmark--line-height: 1.375rem;
   --text-wordmark--letter-spacing: -0.0125em;
@@ -210,8 +209,16 @@ body {
   }
 }
 
+@utility v-board-results {
+  @apply px-6 pt-8 pb-14 md:px-0 md:pt-6 md:pb-0;
+}
+
 @utility v-suggestion-list {
-  @apply space-y-4 px-6 pt-8 pb-14 md:px-0 md:pt-6 md:pb-0 lg:space-y-5;
+  @apply space-y-4 lg:space-y-5;
+}
+
+@utility v-empty {
+  @apply v-card flex min-h-115 flex-col items-center justify-center px-6 text-center md:min-h-150;
 }
 
 @utility v-feedback-card {
