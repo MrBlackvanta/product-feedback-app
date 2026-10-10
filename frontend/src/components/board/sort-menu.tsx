@@ -67,9 +67,9 @@ export default function SortMenu({ sort, category }: SortMenuProps) {
         id={panelId}
         ref={panel}
         inert={!open}
-        className={`v-menu ${open ? "v-menu-open" : ""}`}
+        className={`v-menu w-63.75 ${open ? "v-menu-open" : ""}`}
       >
-        <ul>
+        <ul className="v-menu-list">
           {SORTS.map((value) => (
             <li key={value}>
               <Link

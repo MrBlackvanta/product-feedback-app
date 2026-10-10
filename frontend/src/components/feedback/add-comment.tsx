@@ -46,7 +46,7 @@ export default function AddComment({ id }: { id: number }) {
           placeholder="Type your comment here"
           aria-invalid={error ? "true" : undefined}
           aria-describedby={error ? "comment-error" : "comment-left"}
-          className="v-field mt-6"
+          className="v-field mt-6 h-20"
         />
 
         {error && (

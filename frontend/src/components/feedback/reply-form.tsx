@@ -48,7 +48,7 @@ export default function ReplyForm({
           maxLength={250}
           aria-invalid={error ? "true" : undefined}
           aria-describedby={error ? errorId : undefined}
-          className="v-field"
+          className="v-field h-20"
         />
 
         {error && (

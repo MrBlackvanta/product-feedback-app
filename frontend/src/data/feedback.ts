@@ -18,6 +18,14 @@ export type RoadmapStatus = (typeof ROADMAP_STATUSES)[number];
 export type Status = "suggestion" | RoadmapStatus;
 export type Sort = (typeof SORTS)[number];
 
+export const CATEGORY_CHOICES = [
+  "feature",
+  "ui",
+  "ux",
+  "enhancement",
+  "bug",
+] as const satisfies readonly Category[];
+
 export const CATEGORY_LABEL: Record<Category, string> = {
   ui: "UI",
   ux: "UX",
@@ -46,6 +54,8 @@ export const SORT_LABEL: Record<Sort, string> = {
 };
 
 export const DEFAULT_SORT: Sort = "most-upvotes";
+
+export const DEFAULT_CATEGORY: Category = "feature";
 
 export const DEFAULT_ROADMAP_STATUS: RoadmapStatus = "in-progress";
 

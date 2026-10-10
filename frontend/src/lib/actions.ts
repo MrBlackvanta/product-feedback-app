@@ -1,6 +1,8 @@
 "use server";
 
+import { isCategory, type Category } from "@/data";
 import { updateTag } from "next/cache";
+import { redirect } from "next/navigation";
 import { API_URL, FEEDBACK_TAG, feedbackTag } from "./api";
 
 async function send(path: string, body: unknown) {
@@ -40,4 +42,24 @@ export async function postReply(
 ) {
   await send(`/api/comments/${commentId}/replies`, { content, replyingTo });
   refresh(id);
+}
+
+export async function createFeedback(
+  title: string,
+  category: Category,
+  description: string,
+) {
+  if (!title || !description || !isCategory(category)) {
+    throw new Error("createFeedback received an incomplete request");
+  }
+
+  const response = await send("/api/feedback", {
+    title,
+    category,
+    description,
+  });
+  const created = (await response.json()) as { id: number };
+
+  updateTag(FEEDBACK_TAG);
+  redirect(`/feedback/${created.id}`);
 }

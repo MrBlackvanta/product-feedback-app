@@ -52,7 +52,7 @@ export default async function FeedbackDetailPage({ params }: DetailPageProps) {
   }
 
   return (
-    <div className="v-detail">
+    <main className="v-detail">
       <DetailHeader id={detail.id} />
 
       <FeedbackCard feedback={detail} heading="h1" linked={false} />
@@ -64,6 +64,6 @@ export default async function FeedbackDetailPage({ params }: DetailPageProps) {
       />
 
       <AddComment id={detail.id} />
-    </div>
+    </main>
   );
 }

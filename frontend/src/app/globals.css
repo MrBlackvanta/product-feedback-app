@@ -193,7 +193,7 @@ body {
 }
 
 @utility v-menu {
-  @apply rounded-card bg-surface invisible absolute top-full left-0 z-30 mt-4 w-63.75 origin-top scale-95 text-left opacity-0 transition-[opacity,scale,visibility] duration-150 motion-reduce:transition-none;
+  @apply rounded-card bg-surface invisible absolute top-full left-0 z-30 mt-4 origin-top scale-95 text-left opacity-0 transition-[opacity,scale,visibility] duration-150 motion-reduce:transition-none;
 
   box-shadow: 0 10px 40px -7px --alpha(var(--color-ink-strong) / 35%);
 }
@@ -202,11 +202,21 @@ body {
   @apply visible scale-100 opacity-100;
 }
 
-@utility v-menu-item {
-  @apply text-body-1 text-ink-muted hover:text-accent flex h-12 items-center justify-between px-6;
-
-  li:not(:last-child) > & {
+@utility v-menu-list {
+  & > li:not(:last-child) {
     box-shadow: inset 0 -1px --alpha(var(--color-ink) / 15%);
+  }
+}
+
+@utility v-menu-item {
+  @apply text-body-1 text-ink-muted hover:text-accent flex h-12 cursor-pointer items-center justify-between px-6;
+
+  &[aria-selected="true"] {
+    @apply text-accent;
+  }
+
+  &[data-active] {
+    @apply bg-page text-accent;
   }
 
   & svg {
@@ -427,8 +437,8 @@ body {
   }
 }
 
-@utility v-field {
-  @apply rounded-field bg-page text-body-3 text-ink placeholder:text-ink-muted md:text-body-2 block h-20 w-full resize-none px-4 py-4 outline-1 outline-transparent md:px-6;
+@utility v-control {
+  @apply rounded-field bg-page text-body-3 text-ink placeholder:text-ink-muted md:text-body-2 w-full px-4 outline-1 outline-transparent md:px-6;
 
   transition: box-shadow 150ms;
 
@@ -443,6 +453,60 @@ body {
   }
 }
 
+@utility v-field {
+  @apply v-control block resize-none py-4;
+}
+
+@utility v-input {
+  @apply v-control h-12;
+}
+
+@utility v-select {
+  @apply v-control flex h-12 cursor-pointer items-center justify-between gap-4 text-left;
+
+  &[aria-expanded="true"] {
+    box-shadow: inset 0 0 0 1px var(--color-action);
+  }
+
+  & svg {
+    @apply text-action transition-transform duration-200 motion-reduce:transition-none;
+  }
+}
+
 @utility v-field-error {
   @apply text-body-3 text-danger mt-2;
+}
+
+@utility v-form-page {
+  @apply mx-auto w-full px-6 pt-8.5 pb-14;
+
+  max-width: calc(540px + 2 * --spacing(6));
+
+  @variant md {
+    @apply max-w-135 px-0 pt-14;
+  }
+
+  @variant lg {
+    @apply pt-23 pb-23.5;
+  }
+}
+
+@utility v-form-card {
+  @apply v-card relative mt-13.75 px-6 pt-11 pb-6 md:mt-17 md:px-10.5 md:pt-13 md:pb-10;
+}
+
+@utility v-form-badge {
+  @apply absolute -top-5 left-6 size-10 md:-top-7 md:left-10.5 md:size-14;
+}
+
+@utility v-field-label {
+  @apply text-body-3 md:text-h4 tracking-heading block font-bold;
+}
+
+@utility v-field-hint {
+  @apply text-body-3 text-ink-muted md:text-h4 mt-0.75 md:mt-0.5;
+}
+
+@utility v-form-actions {
+  @apply mt-10 flex flex-col-reverse gap-4 md:mt-8 md:flex-row md:justify-end;
 }
