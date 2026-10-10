@@ -1,4 +1,5 @@
 import { RouteTransitions } from "@/components/effects";
+import { Signature } from "@/components/layout";
 import { SITE_NAME, SITE_URL, openGraphBase, twitterBase } from "@/data";
 import type { Metadata, Viewport } from "next";
 import { Jost } from "next/font/google";
@@ -38,12 +39,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${jost.variable} antialiased`}>
-      <body>
+      <body className="relative min-h-dvh">
         <Suspense>
           <RouteTransitions />
         </Suspense>
 
         {children}
+
+        <Signature />
       </body>
     </html>
   );
