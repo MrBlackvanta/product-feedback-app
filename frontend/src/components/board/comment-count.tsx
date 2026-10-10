@@ -1,15 +1,22 @@
 import { CommentsIcon } from "@/components/icons";
 
+const SCALE = {
+  md: "gap-1 text-body-3 md:gap-2 md:text-body-1",
+  lg: "gap-1 text-body-3 lg:gap-2 lg:text-body-1",
+};
+
 export default function CommentCount({
   count,
+  from = "md",
   className = "",
 }: {
   count: number;
+  from?: keyof typeof SCALE;
   className?: string;
 }) {
   return (
     <p
-      className={`flex items-center gap-1 text-body-3 font-bold md:gap-2 md:text-body-1 ${
+      className={`flex items-center font-bold tracking-heading ${SCALE[from]} ${
         count === 0 ? "text-ink-muted" : "text-ink"
       } ${className}`}
     >

@@ -27,7 +27,7 @@ export default function FeedbackCard({
       />
 
       <div className="v-feedback-card-body">
-        <Heading className="text-body-3 md:text-h3 font-bold">
+        <Heading className="text-body-3 md:text-h3 tracking-heading font-bold">
           {linked ? (
             <Link href={`/feedback/${id}`} className="v-card-link">
               {title}

@@ -41,6 +41,8 @@ export const SORT_LABEL: Record<Sort, string> = {
 
 export const DEFAULT_SORT: Sort = "most-upvotes";
 
+export const DEFAULT_ROADMAP_STATUS: RoadmapStatus = "in-progress";
+
 export type User = {
   name: string;
   username: string;
@@ -73,12 +75,18 @@ export type Comment = {
 
 export type FeedbackDetail = Feedback & { comments: Comment[] };
 
+export type RoadmapItem = Feedback & { status: RoadmapStatus };
+
 export function isCategory(value: unknown): value is Category {
   return CATEGORIES.includes(value as Category);
 }
 
 export function isSort(value: unknown): value is Sort {
   return SORTS.includes(value as Sort);
+}
+
+export function isRoadmapStatus(value: unknown): value is RoadmapStatus {
+  return ROADMAP_STATUSES.includes(value as RoadmapStatus);
 }
 
 const COMPARE: Record<Sort, (a: Feedback, b: Feedback) => number> = {
@@ -103,7 +111,7 @@ export function groupByStatus(feedback: Feedback[]) {
   return ROADMAP_STATUSES.map((status) => ({
     status,
     items: feedback
-      .filter((item) => item.status === status)
+      .filter((item): item is RoadmapItem => item.status === status)
       .sort(COMPARE[DEFAULT_SORT]),
   }));
 }

@@ -1,16 +1,6 @@
-import {
-  ROADMAP_STATUSES,
-  STATUS_LABEL,
-  type Feedback,
-  type RoadmapStatus,
-} from "@/data";
+import { ROADMAP_STATUSES, STATUS_LABEL, type Feedback } from "@/data";
 import Link from "next/link";
-
-const DOT: Record<RoadmapStatus, string> = {
-  planned: "bg-status-planned",
-  "in-progress": "bg-status-progress",
-  live: "bg-status-live",
-};
+import { STATUS_BG } from "./status-color";
 
 export default function RoadmapSummary({ feedback }: { feedback: Feedback[] }) {
   return (
@@ -36,7 +26,7 @@ export default function RoadmapSummary({ feedback }: { feedback: Feedback[] }) {
           <li key={status} className="text-body-1 flex items-center">
             <span
               aria-hidden="true"
-              className={`size-2 shrink-0 rounded-full ${DOT[status]}`}
+              className={`size-2 shrink-0 rounded-full ${STATUS_BG[status]}`}
             />
             <span className="text-ink-muted ml-4">{STATUS_LABEL[status]}</span>
             <span className="text-ink-muted ml-auto font-bold">

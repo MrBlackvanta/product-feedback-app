@@ -15,6 +15,7 @@
   --color-page: #f7f8fd;
   --color-surface: #ffffff;
   --color-outline: #cdd2ee;
+  --color-divider: #8c92b3;
 
   --color-accent: #ad1fea;
   --color-accent-hover: #8e12c4;
@@ -50,6 +51,8 @@
   --text-body-2--line-height: 1.375rem;
   --text-body-3: 0.8125rem;
   --text-body-3--line-height: 1.1875rem;
+
+  --tracking-heading: -0.0139em;
 
   --radius-card: 0.625rem;
   --radius-field: 0.3125rem;
@@ -101,6 +104,8 @@ body {
 }
 
 @utility v-card-link {
+  @apply v-focus-ring;
+
   &::after {
     content: "";
     position: absolute;
@@ -112,13 +117,13 @@ body {
   @apply mx-auto grid w-full grid-cols-1;
 
   @variant md {
-    @apply grid-cols-3 gap-x-[10px] px-[39px] pt-14 pb-14;
+    @apply grid-cols-3 gap-x-2.5 px-9.75 py-14;
 
-    max-width: calc(1110px + 2 * 39px);
+    max-width: calc(1110px + 2 * --spacing(9.75));
   }
 
   @variant lg {
-    @apply grid-cols-[255px_1fr] grid-rows-[auto_1fr] gap-x-[30px] px-6 pt-[5.875rem] pb-[5.875rem];
+    @apply grid-cols-[255px_1fr] grid-rows-[auto_1fr] gap-x-7.5 px-6 py-23.5;
 
     max-width: calc(1110px + 2 * --spacing(6));
   }
@@ -130,14 +135,14 @@ body {
   background-image: url("../assets/background-header-mobile.webp");
 
   @variant md {
-    @apply col-start-1 row-start-1 h-[178px] flex-col items-start justify-end rounded-card pb-6;
+    @apply col-start-1 row-start-1 h-44.5 flex-col items-start justify-end rounded-card pb-6;
 
     background-image: url("../assets/background-header-tablet.webp");
     background-size: 100% 100%;
   }
 
   @variant lg {
-    @apply h-[137px];
+    @apply h-34.25;
 
     background-image: url("../assets/background-header-desktop.webp");
   }
@@ -156,14 +161,14 @@ body {
 }
 
 @utility v-board-aside {
-  @apply invisible fixed top-18 right-0 bottom-0 z-20 w-[271px] translate-x-full space-y-6 overflow-y-auto bg-page p-6 transition-[translate,visibility] duration-300 motion-reduce:transition-none;
+  @apply invisible fixed top-18 right-0 bottom-0 z-20 w-67.75 translate-x-full space-y-6 overflow-y-auto bg-page p-6 transition-[translate,visibility] duration-300 motion-reduce:transition-none;
 
   &[data-open] {
     @apply visible translate-x-0;
   }
 
   @variant md {
-    @apply visible static col-start-2 col-end-4 grid w-auto translate-x-0 grid-cols-subgrid gap-x-[10px] space-y-0 overflow-visible bg-transparent p-0;
+    @apply visible static col-start-2 col-end-4 grid w-auto translate-x-0 grid-cols-subgrid gap-x-2.5 space-y-0 overflow-visible bg-transparent p-0;
   }
 
   @variant lg {
@@ -188,7 +193,7 @@ body {
 }
 
 @utility v-menu {
-  @apply invisible absolute top-full left-0 z-30 mt-4 w-[255px] origin-top scale-95 rounded-card bg-surface text-left opacity-0 transition-[opacity,scale,visibility] duration-150 motion-reduce:transition-none;
+  @apply invisible absolute top-full left-0 z-30 mt-4 w-63.75 origin-top scale-95 rounded-card bg-surface text-left opacity-0 transition-[opacity,scale,visibility] duration-150 motion-reduce:transition-none;
 
   box-shadow: 0 10px 40px -7px --alpha(var(--color-ink-strong) / 35%);
 }
@@ -215,6 +220,10 @@ body {
 
 @utility v-suggestion-list {
   @apply space-y-4 lg:space-y-5;
+}
+
+@utility v-retry {
+  @apply mx-auto grid min-h-dvh w-full max-w-187.5 content-center px-6 py-14;
 }
 
 @utility v-empty {
@@ -254,7 +263,7 @@ body {
 }
 
 @utility v-upvote {
-  @apply v-focus-ring inline-flex h-8 cursor-pointer items-center gap-2 rounded-card bg-action-tint px-4 text-body-3 font-bold text-ink;
+  @apply v-focus-ring relative z-1 inline-flex h-8 cursor-pointer items-center gap-2 rounded-card bg-action-tint px-4 text-body-3 font-bold tracking-heading text-ink;
 
   transition: background-color 150ms;
 
@@ -276,5 +285,54 @@ body {
 }
 
 @utility v-upvote-stacked {
-  @apply h-auto w-10 flex-col gap-[7px] px-0 pt-3 pb-2;
+  @apply h-auto w-10 flex-col gap-1.75 px-0 pt-3 pb-2;
+}
+
+@utility v-roadmap {
+  @apply mx-auto w-full pb-14;
+
+  @variant md {
+    @apply px-9.75 pt-14;
+
+    max-width: calc(1110px + 2 * --spacing(9.75));
+  }
+
+  @variant lg {
+    @apply px-6 pt-19.5 pb-23.5;
+
+    max-width: calc(1110px + 2 * --spacing(6));
+  }
+}
+
+@utility v-roadmap-header {
+  @apply flex h-25 items-center justify-between bg-ink-strong px-6 text-white md:h-28.25 md:rounded-card md:px-8 lg:pr-10;
+}
+
+@utility v-back-link {
+  @apply v-focus-ring inline-flex items-center gap-3 text-body-3 font-bold hover:underline md:text-h4;
+}
+
+@utility v-status-tabs {
+  @apply grid h-15 grid-cols-3 border-b border-divider/25 md:hidden;
+}
+
+@utility v-status-tab {
+  @apply v-focus-ring relative flex items-center justify-center text-body-3 font-bold tracking-heading text-ink-muted;
+
+  &[aria-current]::after {
+    content: "";
+    @apply absolute inset-x-0 bottom-0 h-1 bg-accent;
+  }
+
+  &[aria-current] {
+    @apply text-ink;
+  }
+}
+
+@utility v-roadmap-columns {
+  @apply px-6 pt-6 md:grid md:grid-cols-3 md:gap-x-2.5 md:px-0 md:pt-8 lg:gap-x-7.5 lg:pt-12;
+}
+
+@utility v-roadmap-card {
+  @apply v-card relative flex min-h-58.25 flex-col overflow-hidden px-6 pt-5.5 pb-6 md:min-h-62.75 md:rounded-field md:px-5 md:pt-6.5 lg:min-h-68 lg:px-8 lg:pt-7.75 lg:pb-8;
 }

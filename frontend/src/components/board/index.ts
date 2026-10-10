@@ -7,4 +7,5 @@ export { default as EmptyFeedback } from "./empty-feedback";
 export { default as FeedbackCard } from "./feedback-card";
 export { default as RoadmapSummary } from "./roadmap-summary";
 export { default as SortBar } from "./sort-bar";
+export { STATUS_BG } from "./status-color";
 export { default as UpvoteButton } from "./upvote-button";
