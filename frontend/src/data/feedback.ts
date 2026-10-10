@@ -26,6 +26,13 @@ export const CATEGORY_CHOICES = [
   "bug",
 ] as const satisfies readonly Category[];
 
+export const STATUS_CHOICES = [
+  "suggestion",
+  "planned",
+  "in-progress",
+  "live",
+] as const satisfies readonly Status[];
+
 export const CATEGORY_LABEL: Record<Category, string> = {
   ui: "UI",
   ux: "UX",
@@ -34,7 +41,8 @@ export const CATEGORY_LABEL: Record<Category, string> = {
   feature: "Feature",
 };
 
-export const STATUS_LABEL: Record<RoadmapStatus, string> = {
+export const STATUS_LABEL: Record<Status, string> = {
+  suggestion: "Suggestion",
   planned: "Planned",
   "in-progress": "In-Progress",
   live: "Live",
@@ -107,6 +115,10 @@ export function parseFeedbackId(raw: string) {
 
 export function isRoadmapStatus(value: unknown): value is RoadmapStatus {
   return ROADMAP_STATUSES.includes(value as RoadmapStatus);
+}
+
+export function isStatus(value: unknown): value is Status {
+  return STATUS_CHOICES.includes(value as Status);
 }
 
 const COMPARE: Record<Sort, (a: Feedback, b: Feedback) => number> = {

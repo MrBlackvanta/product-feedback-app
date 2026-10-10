@@ -211,10 +211,6 @@ body {
 @utility v-menu-item {
   @apply text-body-1 text-ink-muted hover:text-accent flex h-12 cursor-pointer items-center justify-between px-6;
 
-  &[aria-selected="true"] {
-    @apply text-accent;
-  }
-
   &[data-active] {
     @apply bg-page text-accent;
   }
@@ -508,5 +504,5 @@ body {
 }
 
 @utility v-form-actions {
-  @apply mt-10 flex flex-col-reverse gap-4 md:mt-8 md:flex-row md:justify-end;
+  @apply mt-10 flex gap-4 md:mt-8 md:justify-end;
 }
