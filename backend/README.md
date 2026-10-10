@@ -1,9 +1,8 @@
 # Feedback API
 
-Self-hosted .NET 9 backend for the product feedback board. At this point it is the service
-scaffold only — configuration, connection handling, rate limiting, CORS, health checks, the
-migration gate and the container. The model and its endpoints land with the sections that use
-them.
+Self-hosted .NET 9 backend for the product feedback board: the board and its roadmap, the
+conversation under each request, and the configuration, migration gate and container that keep
+it alive on a free tier.
 
 ## Tech stack
 
@@ -51,11 +50,103 @@ Changing the model means a new migration, which needs the EF Core tools
 dotnet ef migrations add <Name> -o Data/Migrations
 ```
 
+## The API
+
+| Method   | Route                         | Answers                                                   |
+| -------- | ----------------------------- | --------------------------------------------------------- |
+| `GET`    | `/api/feedback`               | the whole board, lowest id first                           |
+| `GET`    | `/api/feedback/{id}`          | one request with its comments and their replies, or `404`  |
+| `POST`   | `/api/feedback`               | `201` and the new id                                       |
+| `PATCH`  | `/api/feedback/{id}`          | `204`, or `404`                                            |
+| `DELETE` | `/api/feedback/{id}`          | `204`, or `404`; the conversation goes with it             |
+| `POST`   | `/api/feedback/{id}/upvote`   | `204`, or `404`                                            |
+| `POST`   | `/api/feedback/{id}/comments` | `201` and the new id                                       |
+| `POST`   | `/api/comments/{id}/replies`  | `201` and the new id                                       |
+| `GET`    | `/api/me`                     | the signed-in reader                                       |
+
+Sorting and filtering stay on the client, so the board comes back whole and in a stable order
+rather than paginated: twelve requests is not a page worth splitting, and every control in the
+UI re-sorts the same list. The stable order is part of the contract rather than an accident, because
+the client's sort is stable too, so two requests tied on upvotes hold the order the API sent them in.
+
+The comment count on a card includes replies. That is not an invention: the design draws `4` on
+a request with two comments and two replies, and `3` on one with two comments and one reply.
+
+An upvote sends a delta, never a total, and lands as a single update through `GREATEST`. Two
+readers voting at the same moment therefore cannot lose a vote to each other, and the count
+cannot be driven below zero by a client that sends `-1` twice. It answers `204` rather than the
+new total: reading the row back costs a second round trip, and the board revalidates the moment
+the action returns anyway.
+
+Failed validation answers RFC 7807 `ValidationProblemDetails`, keyed by the field the form owns
+(`title`, `description`, `category`, `status`, `content`, `replyingTo`, `delta`), so the client
+can put a message beside the control that caused it.
+
+The board speaks `in-progress`, not `inProgress`. One naming policy produces both the JSON name
+and the value stored in the column, so the two cannot drift apart, and a check constraint built
+from the same enum fences the column to exactly that set of strings.
+
+## The model
+
+Four tables, all in the schema this service owns.
+
+`users.username` is the primary key rather than a surrogate id. It is a real natural key, it is
+what the UI prints, and it is what a reply addresses, so `replies.replying_to` is a foreign key
+to it rather than loose text and a reply cannot be posted to somebody who was never here.
+A reply quoting another reply still hangs off the original comment, which is why the client
+sends `replyingTo` at all: the parent comment does not identify who is being answered.
+
+One row is the signed-in reader. With no sign-in, that has to be data rather than configuration,
+because the same identity authors every comment posted through the API. A unique index filtered
+on that flag means the database enforces "exactly one of these" rather than a convention somebody
+can break with an update.
+
+Comments cascade from their request and replies from their comment, so one delete clears a
+thread. Authors are deliberately restricted: deleting a request must never take a person, and
+their other comments, with it.
+
+`upvotes >= 0` and the two enum sets are check constraints, so the invariants the endpoints
+enforce also hold against a hand-written update.
+
+## Seeding
+
+`Data/seed.json` is embedded in the assembly rather than copied beside it, so no deployment can
+ship a build that cannot find it.
+
+It is applied inside one transaction when the board is empty, which makes a restart self-healing
+after a visitor deletes everything. That is the right behaviour for a demo whose entire content
+is the seed and the wrong one for an app with real users, so it is worth saying out loud.
+
+The rows keep the ids written in the file, so a published link survives a rebuild. That has a
+cost which is easy to miss: a Postgres identity column does not notice ids inserted explicitly,
+so its sequence still starts at 1 and the first request a visitor creates collides with the
+first seeded one. The sequences are advanced to the highest seeded id before the transaction
+commits. The explicit ids pay for themselves in return, because two instances racing to seed an
+empty database cannot double it: the second violates the primary key and rolls back whole.
+
 ## Tests
 
-xUnit, in `tests/FeedbackApi.Tests`, run with `dotnet test`. They currently cover the
-connection-string parser, the schema resolver and the migration gate — the three pieces that
-decide whether the service may boot at all.
+xUnit, in `tests/FeedbackApi.Tests`, run with `dotnet test`.
+
+Most of them drive the endpoints over real HTTP. The test builds a host that maps the same
+`MapFeedbackApi()` the service maps, so routing, model binding, serialisation and status codes
+are all in the path, and asserts against the JSON bytes rather than deserialised objects. The
+consumer is a separate TypeScript app, so the property names and the spelling of `in-progress`
+*are* the contract, and a test that deserialised into the server's own records would happily
+pass through a rename that breaks the board.
+
+That host runs on SQLite in memory, which is a stated compromise rather than a preference. The
+migration is Npgsql SQL and cannot run on SQLite, so the test schema comes from `EnsureCreated`
+instead. What that cannot prove is anything provider-specific: the generated DDL, and the
+identity-sequence fix in the seeder. The DDL is checked by reading
+`dotnet ef migrations script`, and both are exercised the first time the service boots against a
+real database.
+
+What the host deliberately leaves out is `Program.cs` itself. The connection parser, the schema
+resolver, the migration gate and the rate-limit policy are each tested directly, and a model
+test asserts that the migration still matches the model, that every table sits in this service's
+schema, and that the migration ledger sits there with them. CORS and the forwarded-header
+handling have no tests.
 
 The test project sits under `backend/` but is excluded from the API's compile items and from
 the Docker context, so `dotnet publish` and the image never see it.

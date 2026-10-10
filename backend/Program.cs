@@ -1,10 +1,6 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,43 +14,17 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 builder.Services.AddOpenApi();
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.ConfigureHttpJsonOptions(options =>
-    options.SerializerOptions.Converters.Add(
-        new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
-    )
+    options.SerializerOptions.Converters.Add(Wire.Enums())
 );
 
-var schema = DatabaseSchema.Resolve(builder.Configuration);
-
-builder.Services.AddSingleton(schema);
-builder.Services.AddDbContext<FeedbackDbContext>(options =>
-    options
-        .UseNpgsql(
-            DatabaseConnection.Resolve(builder.Configuration),
-            npgsql => npgsql.MigrationsHistoryTable(HistoryRepository.DefaultTableName, schema.Name)
-        )
-        .UseSnakeCaseNamingConvention()
-);
+builder.Services.AddFeedbackDatabase(builder.Configuration);
 
 builder.Services.AddProblemDetails();
 builder
     .Services.AddHealthChecks()
     .AddDbContextCheck<FeedbackDbContext>(customTestQuery: MigrationLedgerAnswers);
 
-builder.Services.AddRateLimiter(options =>
-{
-    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
-    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
-        RateLimitPartition.GetFixedWindowLimiter(
-            context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
-            _ => new FixedWindowRateLimiterOptions
-            {
-                PermitLimit = 60,
-                Window = TimeSpan.FromMinutes(1),
-                QueueLimit = 0,
-            }
-        )
-    );
-});
+builder.Services.AddRateLimiter(RateLimits.Configure);
 
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
 
@@ -82,8 +52,10 @@ app.Use(NeverCache);
 app.UseRateLimiter();
 
 app.MapHealthChecks("/health").DisableRateLimiting();
+app.MapFeedbackApi();
 
 await DatabaseMigrations.EnsureUpToDateAsync<FeedbackDbContext>(app.Services);
+await DatabaseSeed.EnsureSeededAsync(app.Services);
 
 app.Run();
 
