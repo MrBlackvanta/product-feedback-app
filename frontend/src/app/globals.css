@@ -506,3 +506,56 @@ body {
 @utility v-form-actions {
   @apply mt-10 flex gap-4 md:mt-8 md:justify-end;
 }
+
+@utility v-dialog {
+  @apply text-ink m-auto max-h-[calc(100%-3rem)] w-[calc(100%-3rem)] max-w-110 border-0 bg-transparent p-0 opacity-0;
+
+  scale: 0.95;
+  transition:
+    opacity 150ms,
+    scale 150ms,
+    display 150ms allow-discrete,
+    overlay 150ms allow-discrete;
+
+  &[open] {
+    @apply opacity-100;
+
+    scale: 1;
+  }
+
+  &::backdrop {
+    @apply bg-black/50 opacity-0;
+
+    transition:
+      opacity 150ms,
+      display 150ms allow-discrete,
+      overlay 150ms allow-discrete;
+  }
+
+  &[open]::backdrop {
+    @apply opacity-100;
+  }
+
+  @starting-style {
+    &[open] {
+      @apply opacity-0;
+
+      scale: 0.95;
+    }
+
+    &[open]::backdrop {
+      @apply opacity-0;
+    }
+  }
+
+  @variant motion-reduce {
+    &,
+    &::backdrop {
+      @apply transition-none;
+    }
+  }
+}
+
+@utility v-dialog-panel {
+  @apply v-card p-6 md:p-8;
+}

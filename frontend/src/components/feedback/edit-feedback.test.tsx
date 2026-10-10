@@ -104,12 +104,57 @@ describe("EditFeedbackForm", () => {
     expect(saved).not.toHaveBeenCalled();
   });
 
-  it("deletes the request it is editing", async () => {
+  it("asks before deleting rather than deleting on the spot", async () => {
     renderForm();
 
     await userEvent.click(screen.getByRole("button", { name: "Delete" }));
 
+    expect(screen.getByRole("dialog")).toHaveAccessibleName(
+      "Delete this feedback request?",
+    );
+    expect(screen.getByRole("dialog")).toHaveAccessibleDescription(
+      /Add a dark theme option/,
+    );
+    expect(removed).not.toHaveBeenCalled();
+  });
+
+  it("deletes the request once the dialog is confirmed", async () => {
+    renderForm();
+
+    await userEvent.click(screen.getByRole("button", { name: "Delete" }));
+    await userEvent.click(
+      within(screen.getByRole("dialog")).getByRole("button", {
+        name: "Delete Request",
+      }),
+    );
+
     expect(removed).toHaveBeenCalledWith(7);
+  });
+
+  it("keeps the request when the dialog is dismissed", async () => {
+    renderForm();
+
+    await userEvent.click(screen.getByRole("button", { name: "Delete" }));
+    await userEvent.click(
+      within(screen.getByRole("dialog")).getByRole("button", {
+        name: "Cancel",
+      }),
+    );
+
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(removed).not.toHaveBeenCalled();
+  });
+
+  it("puts the keyboard on the safe choice when the dialog opens", async () => {
+    renderForm();
+
+    await userEvent.click(screen.getByRole("button", { name: "Delete" }));
+
+    expect(
+      within(screen.getByRole("dialog")).getByRole("button", {
+        name: "Cancel",
+      }),
+    ).toHaveFocus();
   });
 
   it("cancels back to the request rather than the board", () => {
