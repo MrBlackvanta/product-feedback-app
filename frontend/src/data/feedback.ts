@@ -1,4 +1,10 @@
-export const CATEGORIES = ["ui", "ux", "enhancement", "bug", "feature"] as const;
+export const CATEGORIES = [
+  "ui",
+  "ux",
+  "enhancement",
+  "bug",
+  "feature",
+] as const;
 export const ROADMAP_STATUSES = ["planned", "in-progress", "live"] as const;
 export const SORTS = [
   "most-upvotes",
@@ -83,6 +89,10 @@ export function isCategory(value: unknown): value is Category {
 
 export function isSort(value: unknown): value is Sort {
   return SORTS.includes(value as Sort);
+}
+
+export function parseFeedbackId(raw: string) {
+  return /^[1-9]\d*$/.test(raw) ? Number(raw) : null;
 }
 
 export function isRoadmapStatus(value: unknown): value is RoadmapStatus {

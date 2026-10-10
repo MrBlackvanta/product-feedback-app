@@ -14,7 +14,7 @@ export default function SortBar({ count, sort, category }: SortBarProps) {
     <div className="v-sort-bar">
       <SuggestionsIcon className="hidden shrink-0 md:block" />
 
-      <h2 className="sr-only text-h3 font-bold md:not-sr-only md:mr-9.5 md:ml-2">
+      <h2 className="text-h3 sr-only font-bold md:not-sr-only md:mr-9.5 md:ml-2">
         {count} {count === 1 ? "Suggestion" : "Suggestions"}
       </h2>
 

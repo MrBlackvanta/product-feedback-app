@@ -16,7 +16,7 @@ export default function CommentCount({
 }) {
   return (
     <p
-      className={`flex items-center font-bold tracking-heading ${SCALE[from]} ${
+      className={`tracking-heading flex items-center font-bold ${SCALE[from]} ${
         count === 0 ? "text-ink-muted" : "text-ink"
       } ${className}`}
     >

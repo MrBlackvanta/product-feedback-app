@@ -74,7 +74,7 @@ body {
 }
 
 @utility v-btn {
-  @apply v-focus-ring inline-flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-card px-4 text-body-3 font-bold text-white md:h-11 md:px-6 md:text-h4;
+  @apply v-focus-ring rounded-card text-body-3 md:text-h4 inline-flex h-10 shrink-0 cursor-pointer items-center justify-center px-4 font-bold text-white md:h-11 md:px-6;
 
   transition: background-color 150ms;
 }
@@ -96,7 +96,7 @@ body {
 }
 
 @utility v-pill {
-  @apply inline-flex h-7.5 min-w-12 items-center justify-center rounded-card px-4 text-body-3 font-semibold;
+  @apply rounded-card text-body-3 inline-flex h-7.5 min-w-12 items-center justify-center px-4 font-semibold;
 }
 
 @utility v-card {
@@ -135,7 +135,7 @@ body {
   background-image: url("../assets/background-header-mobile.webp");
 
   @variant md {
-    @apply col-start-1 row-start-1 h-44.5 flex-col items-start justify-end rounded-card pb-6;
+    @apply rounded-card col-start-1 row-start-1 h-44.5 flex-col items-start justify-end pb-6;
 
     background-image: url("../assets/background-header-tablet.webp");
     background-size: 100% 100%;
@@ -153,7 +153,7 @@ body {
 }
 
 @utility v-scrim {
-  @apply invisible fixed inset-x-0 top-18 bottom-0 z-10 bg-black/50 opacity-0 transition-[opacity,visibility] duration-300 md:hidden motion-reduce:transition-none;
+  @apply invisible fixed inset-x-0 top-18 bottom-0 z-10 bg-black/50 opacity-0 transition-[opacity,visibility] duration-300 motion-reduce:transition-none md:hidden;
 
   &[data-open] {
     @apply visible opacity-100;
@@ -161,14 +161,14 @@ body {
 }
 
 @utility v-board-aside {
-  @apply invisible fixed top-18 right-0 bottom-0 z-20 w-67.75 translate-x-full space-y-6 overflow-y-auto bg-page p-6 transition-[translate,visibility] duration-300 motion-reduce:transition-none;
+  @apply bg-page invisible fixed top-18 right-0 bottom-0 z-20 w-67.75 translate-x-full space-y-6 overflow-y-auto p-6 transition-[translate,visibility] duration-300 motion-reduce:transition-none;
 
   &[data-open] {
     @apply visible translate-x-0;
   }
 
   @variant md {
-    @apply visible static col-start-2 col-end-4 grid w-auto translate-x-0 grid-cols-subgrid gap-x-2.5 space-y-0 overflow-visible bg-transparent p-0;
+    @apply visible static col-start-2 col-end-4 grid w-auto translate-x-0 grid-cols-subgrid space-y-0 gap-x-2.5 overflow-visible bg-transparent p-0;
   }
 
   @variant lg {
@@ -181,11 +181,11 @@ body {
 }
 
 @utility v-sort-bar {
-  @apply flex h-14 items-center bg-ink-strong px-6 text-white md:h-18 md:rounded-card md:pr-4 md:pl-8;
+  @apply bg-ink-strong md:rounded-card flex h-14 items-center px-6 text-white md:h-18 md:pr-4 md:pl-8;
 }
 
 @utility v-sort-trigger {
-  @apply v-focus-ring flex cursor-pointer items-center gap-2 text-body-3 text-action-tint md:text-h4;
+  @apply v-focus-ring text-body-3 text-action-tint md:text-h4 flex cursor-pointer items-center gap-2;
 
   & svg {
     @apply transition-transform duration-200 motion-reduce:transition-none;
@@ -193,7 +193,7 @@ body {
 }
 
 @utility v-menu {
-  @apply invisible absolute top-full left-0 z-30 mt-4 w-63.75 origin-top scale-95 rounded-card bg-surface text-left opacity-0 transition-[opacity,scale,visibility] duration-150 motion-reduce:transition-none;
+  @apply rounded-card bg-surface invisible absolute top-full left-0 z-30 mt-4 w-63.75 origin-top scale-95 text-left opacity-0 transition-[opacity,scale,visibility] duration-150 motion-reduce:transition-none;
 
   box-shadow: 0 10px 40px -7px --alpha(var(--color-ink-strong) / 35%);
 }
@@ -203,7 +203,7 @@ body {
 }
 
 @utility v-menu-item {
-  @apply flex h-12 items-center justify-between px-6 text-body-1 text-ink-muted hover:text-accent;
+  @apply text-body-1 text-ink-muted hover:text-accent flex h-12 items-center justify-between px-6;
 
   li:not(:last-child) > & {
     box-shadow: inset 0 -1px --alpha(var(--color-ink) / 15%);
@@ -242,7 +242,7 @@ body {
   @variant md {
     grid-template-areas: "votes body comments";
     grid-template-columns: auto 1fr auto;
-    column-gap: --spacing(10);
+    column-gap: --spacing(6.25);
     row-gap: 0;
   }
 }
@@ -250,6 +250,10 @@ body {
 @utility v-feedback-card-votes {
   grid-area: votes;
   justify-self: start;
+
+  @variant md {
+    margin-right: --spacing(3.75);
+  }
 }
 
 @utility v-feedback-card-body {
@@ -263,7 +267,7 @@ body {
 }
 
 @utility v-upvote {
-  @apply v-focus-ring relative z-1 inline-flex h-8 cursor-pointer items-center gap-2 rounded-card bg-action-tint px-4 text-body-3 font-bold tracking-heading text-ink;
+  @apply v-focus-ring rounded-card bg-action-tint text-body-3 tracking-heading text-ink relative z-1 inline-flex h-8 cursor-pointer items-center gap-2 px-4 font-bold;
 
   transition: background-color 150ms;
 
@@ -305,23 +309,23 @@ body {
 }
 
 @utility v-roadmap-header {
-  @apply flex h-25 items-center justify-between bg-ink-strong px-6 text-white md:h-28.25 md:rounded-card md:px-8 lg:pr-10;
+  @apply bg-ink-strong md:rounded-card flex h-25 items-center justify-between px-6 text-white md:h-28.25 md:px-8 lg:pr-10;
 }
 
 @utility v-back-link {
-  @apply v-focus-ring inline-flex items-center gap-3 text-body-3 font-bold hover:underline md:text-h4;
+  @apply v-focus-ring text-body-3 md:text-h4 inline-flex items-center gap-3 font-bold hover:underline;
 }
 
 @utility v-status-tabs {
-  @apply grid h-15 grid-cols-3 border-b border-divider/25 md:hidden;
+  @apply border-divider/25 grid h-15 grid-cols-3 border-b md:hidden;
 }
 
 @utility v-status-tab {
-  @apply v-focus-ring relative flex items-center justify-center text-body-3 font-bold tracking-heading text-ink-muted;
+  @apply v-focus-ring text-body-3 tracking-heading text-ink-muted relative flex items-center justify-center font-bold;
 
   &[aria-current]::after {
     content: "";
-    @apply absolute inset-x-0 bottom-0 h-1 bg-accent;
+    @apply bg-accent absolute inset-x-0 bottom-0 h-1;
   }
 
   &[aria-current] {
@@ -334,5 +338,111 @@ body {
 }
 
 @utility v-roadmap-card {
-  @apply v-card relative flex min-h-58.25 flex-col overflow-hidden px-6 pt-5.5 pb-6 md:min-h-62.75 md:rounded-field md:px-5 md:pt-6.5 lg:min-h-68 lg:px-8 lg:pt-7.75 lg:pb-8;
+  @apply v-card md:rounded-field relative flex min-h-58.25 flex-col overflow-hidden px-6 pt-5.5 pb-6 md:min-h-62.75 md:px-5 md:pt-6.5 lg:min-h-68 lg:px-8 lg:pt-7.75 lg:pb-8;
+}
+
+@utility v-detail {
+  @apply mx-auto w-full space-y-6 px-6 pt-6 pb-14;
+
+  @variant md {
+    @apply px-9.75 pt-14;
+
+    max-width: calc(730px + 2 * --spacing(9.75));
+  }
+
+  @variant lg {
+    @apply px-6 pt-20 pb-23.5;
+
+    max-width: calc(730px + 2 * --spacing(6));
+  }
+}
+
+@utility v-detail-bar {
+  @apply flex h-10 items-center justify-between md:h-11;
+}
+
+@utility v-comments-card {
+  @apply v-card p-6 md:px-8 md:pt-6 md:pb-8;
+}
+
+@utility v-comment-list {
+  @apply mt-6 md:mt-7;
+
+  & > li + li {
+    @apply border-divider/25 mt-6 border-t pt-6 md:mt-8 md:pt-8;
+  }
+}
+
+@utility v-comment {
+  @apply grid items-center;
+
+  grid-template-areas:
+    "avatar name reply"
+    "body body body"
+    "form form form";
+  grid-template-columns: auto 1fr auto;
+  column-gap: --spacing(4);
+
+  @variant md {
+    grid-template-areas:
+      "avatar name reply"
+      ". body body"
+      ". form form";
+    column-gap: --spacing(8);
+  }
+}
+
+@utility v-comment-avatar {
+  grid-area: avatar;
+}
+
+@utility v-comment-name {
+  grid-area: name;
+}
+
+@utility v-comment-reply {
+  @apply v-focus-ring text-body-3 text-action cursor-pointer font-semibold hover:underline;
+
+  grid-area: reply;
+}
+
+@utility v-comment-body {
+  @apply text-body-3 text-ink-muted md:text-body-2 mt-4 md:mt-4.25;
+
+  grid-area: body;
+}
+
+@utility v-comment-form {
+  @apply mt-6 flex flex-col items-end gap-4 md:flex-row md:items-start;
+
+  grid-area: form;
+}
+
+@utility v-replies {
+  @apply relative mt-6 space-y-6 pl-6 md:mt-8 md:space-y-8 md:pl-11.25;
+
+  &::before {
+    content: "";
+    @apply bg-ink-muted/10 absolute inset-y-0 left-0 w-px md:left-5;
+  }
+}
+
+@utility v-field {
+  @apply rounded-field bg-page text-body-3 text-ink placeholder:text-ink-muted md:text-body-2 block h-20 w-full resize-none px-4 py-4 outline-1 outline-transparent md:px-6;
+
+  transition: box-shadow 150ms;
+
+  &:focus-visible {
+    box-shadow:
+      inset 0 0 0 1px var(--color-action),
+      0 0 0 3px --alpha(var(--color-action) / 20%);
+  }
+
+  &[aria-invalid="true"] {
+    box-shadow: inset 0 0 0 1px var(--color-danger);
+  }
+}
+
+@utility v-field-error {
+  @apply text-body-3 text-danger mt-2;
 }

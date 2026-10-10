@@ -1,8 +1,4 @@
-import {
-  RoadmapColumn,
-  RoadmapHeader,
-  StatusTabs,
-} from "@/components/roadmap";
+import { RoadmapColumn, RoadmapHeader, StatusTabs } from "@/components/roadmap";
 import {
   DEFAULT_ROADMAP_STATUS,
   groupByStatus,

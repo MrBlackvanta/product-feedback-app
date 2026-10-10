@@ -31,7 +31,10 @@ export default function SortMenu({ sort, category }: SortMenuProps) {
 
     function onPointerDown(event: PointerEvent) {
       const target = event.target as Node;
-      if (trigger.current?.contains(target) || panel.current?.contains(target)) {
+      if (
+        trigger.current?.contains(target) ||
+        panel.current?.contains(target)
+      ) {
         return;
       }
       close(false);
