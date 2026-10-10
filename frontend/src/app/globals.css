@@ -17,14 +17,14 @@
   --color-outline: #cdd2ee;
 
   --color-accent: #ad1fea;
-  --color-accent-hover: #c75af6;
+  --color-accent-hover: #8e12c4;
   --color-action: #4661e6;
-  --color-action-hover: #7c91f9;
+  --color-action-hover: #1e3edb;
   --color-action-tint: #f2f4ff;
   --color-action-tint-hover: #cfd7ff;
-  --color-neutral-hover: #656ea3;
+  --color-neutral-hover: #292f52;
   --color-danger: #d73737;
-  --color-danger-hover: #e98888;
+  --color-danger-hover: #b72424;
 
   --color-status-planned: #f49f85;
   --color-status-progress: #ad1fea;
@@ -58,4 +58,216 @@
 
 html {
   overflow-y: scroll;
+}
+
+body {
+  @apply bg-page text-ink;
+}
+
+@utility v-focus-ring {
+  &:focus-visible {
+    outline: 2px solid var(--color-action);
+    outline-offset: 3px;
+  }
+}
+
+@utility v-btn {
+  @apply v-focus-ring inline-flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-card px-4 text-body-3 font-bold text-white md:h-11 md:px-6 md:text-h4;
+
+  transition: background-color 150ms;
+}
+
+@utility v-btn-accent {
+  @apply v-btn bg-accent hover:bg-accent-hover;
+}
+
+@utility v-btn-action {
+  @apply v-btn bg-action hover:bg-action-hover;
+}
+
+@utility v-btn-neutral {
+  @apply v-btn bg-ink hover:bg-neutral-hover;
+}
+
+@utility v-btn-danger {
+  @apply v-btn bg-danger hover:bg-danger-hover;
+}
+
+@utility v-pill {
+  @apply inline-flex h-7.5 min-w-12 items-center justify-center rounded-card px-4 text-body-3 font-semibold;
+}
+
+@utility v-card {
+  @apply rounded-card bg-surface;
+}
+
+@utility v-card-link {
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+}
+
+@utility v-board {
+  @apply mx-auto grid w-full grid-cols-1;
+
+  @variant md {
+    @apply grid-cols-3 gap-x-[10px] px-[39px] pt-14 pb-14;
+
+    max-width: calc(1110px + 2 * 39px);
+  }
+
+  @variant lg {
+    @apply grid-cols-[255px_1fr] grid-rows-[auto_1fr] gap-x-[30px] px-6 pt-[5.875rem] pb-[5.875rem];
+
+    max-width: calc(1110px + 2 * --spacing(6));
+  }
+}
+
+@utility v-board-header {
+  @apply relative flex h-18 items-center justify-between bg-cover px-6 text-white;
+
+  background-image: url("../assets/background-header-mobile.webp");
+
+  @variant md {
+    @apply col-start-1 row-start-1 h-[178px] flex-col items-start justify-end rounded-card pb-6;
+
+    background-image: url("../assets/background-header-tablet.webp");
+    background-size: 100% 100%;
+  }
+
+  @variant lg {
+    @apply h-[137px];
+
+    background-image: url("../assets/background-header-desktop.webp");
+  }
+}
+
+@utility v-menu-toggle {
+  @apply v-focus-ring -mr-2 cursor-pointer p-2 text-white md:hidden;
+}
+
+@utility v-scrim {
+  @apply invisible fixed inset-x-0 top-18 bottom-0 z-10 bg-black/50 opacity-0 transition-[opacity,visibility] duration-300 md:hidden motion-reduce:transition-none;
+
+  &[data-open] {
+    @apply visible opacity-100;
+  }
+}
+
+@utility v-board-aside {
+  @apply invisible fixed top-18 right-0 bottom-0 z-20 w-[271px] translate-x-full space-y-6 overflow-y-auto bg-page p-6 transition-[translate,visibility] duration-300 motion-reduce:transition-none;
+
+  &[data-open] {
+    @apply visible translate-x-0;
+  }
+
+  @variant md {
+    @apply visible static col-start-2 col-end-4 grid w-auto translate-x-0 grid-cols-subgrid gap-x-[10px] space-y-0 overflow-visible bg-transparent p-0;
+  }
+
+  @variant lg {
+    @apply col-start-1 col-end-2 row-start-2 mt-6 flex w-auto flex-col gap-6;
+  }
+}
+
+@utility v-board-main {
+  @apply md:col-span-full md:mt-10 lg:col-start-2 lg:col-end-3 lg:row-start-1 lg:row-end-3 lg:mt-0;
+}
+
+@utility v-sort-bar {
+  @apply flex h-14 items-center bg-ink-strong px-6 text-white md:h-18 md:rounded-card md:pr-4 md:pl-8;
+}
+
+@utility v-sort-trigger {
+  @apply v-focus-ring flex cursor-pointer items-center gap-2 text-body-3 text-action-tint md:text-h4;
+
+  & svg {
+    @apply transition-transform duration-200 motion-reduce:transition-none;
+  }
+}
+
+@utility v-menu {
+  @apply invisible absolute top-full left-0 z-30 mt-4 w-[255px] origin-top scale-95 rounded-card bg-surface text-left opacity-0 transition-[opacity,scale,visibility] duration-150 motion-reduce:transition-none;
+
+  box-shadow: 0 10px 40px -7px --alpha(var(--color-ink-strong) / 35%);
+}
+
+@utility v-menu-open {
+  @apply visible scale-100 opacity-100;
+}
+
+@utility v-menu-item {
+  @apply flex h-12 items-center justify-between px-6 text-body-1 text-ink-muted hover:text-accent;
+
+  li:not(:last-child) > & {
+    box-shadow: inset 0 -1px --alpha(var(--color-ink) / 15%);
+  }
+
+  & svg {
+    @apply text-accent;
+  }
+}
+
+@utility v-suggestion-list {
+  @apply space-y-4 px-6 pt-8 pb-14 md:px-0 md:pt-6 md:pb-0 lg:space-y-5;
+}
+
+@utility v-feedback-card {
+  @apply v-card relative grid items-start px-6 py-6 md:px-8 md:py-7;
+
+  grid-template-areas:
+    "body body"
+    "votes comments";
+  grid-template-columns: auto 1fr;
+  row-gap: --spacing(4);
+
+  @variant md {
+    grid-template-areas: "votes body comments";
+    grid-template-columns: auto 1fr auto;
+    column-gap: --spacing(10);
+    row-gap: 0;
+  }
+}
+
+@utility v-feedback-card-votes {
+  grid-area: votes;
+  justify-self: start;
+}
+
+@utility v-feedback-card-body {
+  grid-area: body;
+}
+
+@utility v-feedback-card-comments {
+  grid-area: comments;
+  align-self: center;
+  justify-self: end;
+}
+
+@utility v-upvote {
+  @apply v-focus-ring inline-flex h-8 cursor-pointer items-center gap-2 rounded-card bg-action-tint px-4 text-body-3 font-bold text-ink;
+
+  transition: background-color 150ms;
+
+  & svg {
+    @apply text-action;
+  }
+
+  &:hover {
+    @apply bg-action-tint-hover;
+  }
+
+  &[aria-pressed="true"] {
+    @apply bg-action text-white;
+  }
+
+  &[aria-pressed="true"] svg {
+    @apply text-white;
+  }
+}
+
+@utility v-upvote-stacked {
+  @apply h-auto w-10 flex-col gap-[7px] px-0 pt-3 pb-2;
 }
