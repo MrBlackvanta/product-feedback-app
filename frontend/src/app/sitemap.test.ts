@@ -1,7 +1,15 @@
 import { SITE_URL } from "@/data";
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import robots from "./robots";
 import sitemap from "./sitemap";
+
+const { getFeedback } = vi.hoisted(() => ({ getFeedback: vi.fn() }));
+
+vi.mock("@/lib", () => ({ getFeedback }));
+
+beforeEach(() => {
+  getFeedback.mockResolvedValue([{ id: 4 }, { id: 11 }]);
+});
 
 describe("robots", () => {
   it("points crawlers at the sitemap on this origin", () => {
@@ -14,19 +22,34 @@ describe("robots", () => {
 });
 
 describe("sitemap", () => {
-  it("lists every entry on this origin", () => {
-    for (const entry of sitemap()) {
+  it("lists every entry on this origin", async () => {
+    for (const entry of await sitemap()) {
       expect(new URL(entry.url).origin).toBe(new URL(SITE_URL).origin);
     }
   });
 
-  it("lists each route once", () => {
-    const urls = sitemap().map((entry) => entry.url);
+  it("lists each route once", async () => {
+    const urls = (await sitemap()).map((entry) => entry.url);
 
     expect(new Set(urls).size).toBe(urls.length);
   });
 
-  it("includes the home page", () => {
-    expect(sitemap().map((entry) => entry.url)).toContain(SITE_URL);
+  it("includes the home page", async () => {
+    expect((await sitemap()).map((entry) => entry.url)).toContain(SITE_URL);
+  });
+
+  it("lists a page for every request on the board", async () => {
+    const urls = (await sitemap()).map((entry) => entry.url);
+
+    expect(urls).toContain(`${SITE_URL}/feedback/4`);
+    expect(urls).toContain(`${SITE_URL}/feedback/11`);
+  });
+
+  it("ranks a request above the form that creates one", async () => {
+    const entries = await sitemap();
+    const detail = entries.find((entry) => entry.url.endsWith("/feedback/4"));
+    const form = entries.find((entry) => entry.url.endsWith("/feedback/new"));
+
+    expect(detail?.priority).toBeGreaterThan(form!.priority!);
   });
 });
