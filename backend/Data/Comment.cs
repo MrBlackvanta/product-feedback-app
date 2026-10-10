@@ -1,4 +1,4 @@
-public class Comment
+public class Comment : IAuthored
 {
     public int Id { get; set; }
     public int FeedbackId { get; set; }

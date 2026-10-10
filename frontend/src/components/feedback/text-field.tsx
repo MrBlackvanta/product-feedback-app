@@ -1,5 +1,7 @@
 "use client";
 
+import submitOnCtrlEnter from "./ctrl-enter";
+
 type TextFieldProps = {
   id: string;
   label: string;
@@ -46,7 +48,11 @@ export default function TextField({
       </p>
 
       {multiline ? (
-        <textarea {...control} className="v-field mt-4 h-30 md:h-24" />
+        <textarea
+          {...control}
+          onKeyDown={submitOnCtrlEnter}
+          className="v-field mt-4 h-30 md:h-24"
+        />
       ) : (
         <input {...control} className="v-input mt-4" />
       )}

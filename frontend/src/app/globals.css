@@ -249,6 +249,20 @@ body {
 
 @utility v-suggestion-list {
   @apply space-y-4 lg:space-y-5;
+
+  @media (prefers-reduced-motion: no-preference) {
+    & > li {
+      animation: v-deal 320ms cubic-bezier(0.32, 0.72, 0, 1) backwards;
+      animation-delay: min(var(--place, 0) * 50ms, 400ms);
+    }
+  }
+}
+
+@keyframes v-deal {
+  from {
+    opacity: 0;
+    translate: 0 16px;
+  }
 }
 
 @utility v-retry {
@@ -452,14 +466,20 @@ body {
   grid-template-areas:
     "avatar name reply"
     "body body body"
+    "alert alert alert"
     "form form form";
   grid-template-columns: auto 1fr auto;
   column-gap: --spacing(4);
+
+  &[data-pending] {
+    @apply opacity-55;
+  }
 
   @variant md {
     grid-template-areas:
       "avatar name reply"
       ". body body"
+      ". alert alert"
       ". form form";
     column-gap: --spacing(8);
   }
@@ -473,10 +493,26 @@ body {
   grid-area: name;
 }
 
-@utility v-comment-reply {
-  @apply v-focus-ring text-body-3 text-action cursor-pointer font-semibold hover:underline;
+@utility v-comment-actions {
+  @apply flex shrink-0 items-center gap-4 md:gap-6;
 
   grid-area: reply;
+}
+
+@utility v-comment-action {
+  @apply v-focus-ring text-body-3 cursor-pointer font-semibold hover:underline;
+}
+
+@utility v-comment-editor {
+  @apply mt-4 md:mt-4.25;
+
+  grid-area: body;
+}
+
+@utility v-comment-trouble {
+  @apply text-body-3 text-danger mt-4 flex flex-wrap items-center gap-x-4 gap-y-1;
+
+  grid-area: alert;
 }
 
 @utility v-comment-body {

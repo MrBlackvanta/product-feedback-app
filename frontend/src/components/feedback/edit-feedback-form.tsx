@@ -126,7 +126,9 @@ export default function EditFeedbackForm({ feedback }: EditFeedbackFormProps) {
       </form>
 
       <DeleteDialog
-        title={feedback.title}
+        heading="Delete this feedback request?"
+        detail={`‘${feedback.title}’ and every comment on it will be permanently removed. This cannot be undone.`}
+        confirmLabel="Delete Request"
         open={confirming}
         busy={removing}
         onConfirm={() => startRemoving(() => deleteFeedback(feedback.id))}

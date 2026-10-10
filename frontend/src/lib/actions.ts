@@ -48,6 +48,39 @@ export async function postReply(
   refresh(id);
 }
 
+const ENTRY_PATH = { comment: "comments", reply: "replies" } as const;
+
+export type EntryScope = keyof typeof ENTRY_PATH;
+
+function entryPath(scope: EntryScope, entryId: number) {
+  const segment = ENTRY_PATH[scope];
+
+  if (!segment || !Number.isSafeInteger(entryId)) {
+    throw new Error("The request named an entry that cannot exist");
+  }
+
+  return `/api/${segment}/${entryId}`;
+}
+
+export async function editEntry(
+  id: number,
+  scope: EntryScope,
+  entryId: number,
+  content: string,
+) {
+  await send("PATCH", entryPath(scope, entryId), { content });
+  refresh(id);
+}
+
+export async function removeEntry(
+  id: number,
+  scope: EntryScope,
+  entryId: number,
+) {
+  await send("DELETE", entryPath(scope, entryId));
+  refresh(id);
+}
+
 export async function createFeedback(
   title: string,
   category: Category,

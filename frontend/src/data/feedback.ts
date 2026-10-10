@@ -61,6 +61,8 @@ export const SORT_LABEL: Record<Sort, string> = {
   "least-comments": "Least Comments",
 };
 
+export const COMMENT_LIMIT = 250;
+
 export const DEFAULT_SORT: Sort = "most-upvotes";
 
 export const DEFAULT_CATEGORY: Category = "feature";

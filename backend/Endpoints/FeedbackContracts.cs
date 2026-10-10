@@ -37,4 +37,6 @@ public record NewComment(string? Content);
 
 public record NewReply(string? Content, string? ReplyingTo);
 
+public record EditContent(string? Content);
+
 public record NewVote(int Delta);

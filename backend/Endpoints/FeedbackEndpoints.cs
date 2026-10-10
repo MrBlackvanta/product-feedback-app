@@ -36,6 +36,10 @@ public static class FeedbackEndpoints
 
         api.MapGet("/me", CurrentUser);
         api.MapPost("/comments/{commentId:int}/replies", AddReply);
+        api.MapPatch("/comments/{id:int}", EditOwn<Comment>);
+        api.MapDelete("/comments/{id:int}", RemoveOwn<Comment>);
+        api.MapPatch("/replies/{id:int}", EditOwn<Reply>);
+        api.MapDelete("/replies/{id:int}", RemoveOwn<Reply>);
 
         var board = api.MapGroup("/feedback");
 
@@ -299,6 +303,68 @@ public static class FeedbackEndpoints
             new CreatedView(reply.Id)
         );
     }
+
+    static async Task<
+        Results<NoContent, NotFound, ProblemHttpResult, ValidationProblem>
+    > EditOwn<TEntry>(int id, EditContent form, FeedbackDbContext database, CancellationToken token)
+        where TEntry : class, IAuthored
+    {
+        var checks = new Checks();
+        var content = checks.Text("content", form.Content, Limits.Content);
+
+        if (checks.Failed(out var problem))
+        {
+            return problem;
+        }
+
+        var stored = await database.Set<TEntry>().FindAsync([id], token);
+
+        if (stored is null)
+        {
+            return TypedResults.NotFound();
+        }
+
+        if (stored.AuthorUsername != await CurrentUsername(database, token))
+        {
+            return SomebodyElses();
+        }
+
+        stored.Content = content;
+        await database.SaveChangesAsync(token);
+
+        return TypedResults.NoContent();
+    }
+
+    static async Task<Results<NoContent, NotFound, ProblemHttpResult>> RemoveOwn<TEntry>(
+        int id,
+        FeedbackDbContext database,
+        CancellationToken token
+    )
+        where TEntry : class, IAuthored
+    {
+        var stored = await database.Set<TEntry>().FindAsync([id], token);
+
+        if (stored is null)
+        {
+            return TypedResults.NotFound();
+        }
+
+        if (stored.AuthorUsername != await CurrentUsername(database, token))
+        {
+            return SomebodyElses();
+        }
+
+        database.Remove(stored);
+        await database.SaveChangesAsync(token);
+
+        return TypedResults.NoContent();
+    }
+
+    static ProblemHttpResult SomebodyElses() =>
+        TypedResults.Problem(
+            "Only the author can change this.",
+            statusCode: StatusCodes.Status403Forbidden
+        );
 
     static Task<string> CurrentUsername(FeedbackDbContext database, CancellationToken token) =>
         database

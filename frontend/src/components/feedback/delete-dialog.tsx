@@ -1,17 +1,21 @@
 "use client";
 
-import { useEffect, useId, useRef } from "react";
+import { useEffect, useId, useRef, type ReactNode } from "react";
 
 type DeleteDialogProps = {
-  title: string;
+  heading: string;
+  detail: ReactNode;
+  confirmLabel: string;
   open: boolean;
-  busy: boolean;
+  busy?: boolean;
   onConfirm: () => void;
   onClose: () => void;
 };
 
 export default function DeleteDialog({
-  title,
+  heading,
+  detail,
+  confirmLabel,
   open,
   busy,
   onConfirm,
@@ -46,15 +50,14 @@ export default function DeleteDialog({
     >
       <div className="v-dialog-panel">
         <h2 id={`${id}-heading`} className="text-h3 md:text-h2 font-bold">
-          Delete this feedback request?
+          {heading}
         </h2>
 
         <p
           id={`${id}-detail`}
           className="text-body-2 md:text-body-1 text-ink-muted mt-4"
         >
-          ‘{title}’ and every comment on it will be permanently removed. This
-          cannot be undone.
+          {detail}
         </p>
 
         <div className="mt-6 flex flex-col gap-4 md:mt-8 md:flex-row md:justify-end">
@@ -74,7 +77,7 @@ export default function DeleteDialog({
             onClick={onConfirm}
             className="v-btn-danger"
           >
-            Delete Request
+            {confirmLabel}
           </button>
         </div>
       </div>

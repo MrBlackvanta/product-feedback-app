@@ -1,4 +1,4 @@
-public class Reply
+public class Reply : IAuthored
 {
     public int Id { get; set; }
     public int CommentId { get; set; }

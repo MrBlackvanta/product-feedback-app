@@ -1,64 +1,81 @@
 "use client";
 
-import { postReply } from "@/lib/actions";
-import { useActionState } from "react";
+import { COMMENT_LIMIT } from "@/data";
+import { useId, useState } from "react";
+import { useConversation } from "./conversation";
+import submitOnCtrlEnter from "./ctrl-enter";
 
 type ReplyFormProps = {
-  id: number;
   commentId: number;
   replyingTo: string;
-  onPosted: () => void;
+  onDone: () => void;
 };
 
 export default function ReplyForm({
-  id,
   commentId,
   replyingTo,
-  onPosted,
+  onDone,
 }: ReplyFormProps) {
-  const [error, submit, pending] = useActionState<string | null, FormData>(
-    async (_previous, data) => {
-      const content = String(data.get("reply") ?? "").trim();
+  const { reply } = useConversation();
+  const [content, setContent] = useState("");
+  const [attempts, setAttempts] = useState(0);
+  const field = useId();
 
-      if (!content) {
-        return "Write a reply before posting.";
-      }
-
-      await postReply(id, commentId, replyingTo, content);
-      onPosted();
-
-      return null;
-    },
-    null,
-  );
-
-  const errorId = `reply-error-${commentId}`;
+  const error =
+    attempts > 0 && !content.trim() ? "Write a reply before posting." : "";
 
   return (
-    <form action={submit} className="v-comment-form">
+    <form
+      onSubmit={(submitted) => {
+        submitted.preventDefault();
+        setAttempts(attempts + 1);
+
+        const written = content.trim();
+
+        if (!written) return;
+
+        reply(commentId, replyingTo, written);
+        onDone();
+      }}
+      className="v-comment-form"
+    >
       <div className="w-full md:flex-1">
-        <label htmlFor={`reply-${commentId}`} className="sr-only">
+        <label htmlFor={field} className="sr-only">
           {`Reply to @${replyingTo}`}
         </label>
 
         <textarea
-          id={`reply-${commentId}`}
-          name="reply"
+          id={field}
           autoFocus
-          maxLength={250}
+          value={content}
+          maxLength={COMMENT_LIMIT}
+          onChange={(changed) => setContent(changed.target.value)}
+          onKeyDown={(pressed) => {
+            if (pressed.key === "Escape") {
+              onDone();
+              return;
+            }
+
+            submitOnCtrlEnter(pressed);
+          }}
           aria-invalid={error ? "true" : undefined}
-          aria-describedby={error ? errorId : undefined}
+          aria-describedby={error ? `${field}-error` : undefined}
           className="v-field h-20"
         />
 
         {error && (
-          <p key={error} id={errorId} role="alert" className="v-field-error">
+          <p
+            key={attempts}
+            id={`${field}-error`}
+            role="alert"
+            className="v-field-error"
+          >
             {error}
           </p>
         )}
       </div>
 
-      <button type="submit" disabled={pending} className="v-btn-accent">
+      <button type="submit" className="v-btn-accent">
         Post Reply
       </button>
     </form>

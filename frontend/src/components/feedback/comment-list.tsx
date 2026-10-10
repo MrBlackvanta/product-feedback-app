@@ -1,13 +1,11 @@
-import type { Comment } from "@/data";
+"use client";
+
 import CommentItem from "./comment-item";
+import { useConversation } from "./conversation";
 
-type CommentListProps = {
-  id: number;
-  count: number;
-  comments: Comment[];
-};
+export default function CommentList() {
+  const { comments, count } = useConversation();
 
-export default function CommentList({ id, count, comments }: CommentListProps) {
   return (
     <section aria-labelledby="comments" className="v-comments-card">
       <h2 id="comments" className="text-h3 font-bold">
@@ -21,7 +19,7 @@ export default function CommentList({ id, count, comments }: CommentListProps) {
       ) : (
         <ol className="v-comment-list">
           {comments.map((comment) => (
-            <CommentItem key={comment.id} id={id} comment={comment} />
+            <CommentItem key={comment.id} comment={comment} />
           ))}
         </ol>
       )}

@@ -1,35 +1,33 @@
-import type { Comment } from "@/data";
 import CommentThread from "./comment-thread";
+import type { Thread } from "./conversation";
 
-export default function CommentItem({
-  id,
-  comment,
-}: {
-  id: number;
-  comment: Comment;
-}) {
+export default function CommentItem({ comment }: { comment: Thread }) {
   return (
     <li>
-      <CommentThread id={id} commentId={comment.id} author={comment.author}>
-        <p className="v-comment-body">{comment.content}</p>
-      </CommentThread>
+      <CommentThread
+        scope="comment"
+        id={comment.id}
+        commentId={comment.id}
+        author={comment.author}
+        content={comment.content}
+        pending={comment.pending}
+        trouble={comment.trouble}
+      />
 
       {comment.replies.length > 0 && (
         <ol className="v-replies">
           {comment.replies.map((reply) => (
             <li key={reply.id}>
               <CommentThread
-                id={id}
+                scope="reply"
+                id={reply.id}
                 commentId={comment.id}
                 author={reply.author}
-              >
-                <p className="v-comment-body">
-                  <span className="text-accent font-bold">
-                    {`@${reply.replyingTo}`}
-                  </span>{" "}
-                  {reply.content}
-                </p>
-              </CommentThread>
+                content={reply.content}
+                replyingTo={reply.replyingTo}
+                pending={reply.pending}
+                trouble={reply.trouble}
+              />
             </li>
           ))}
         </ol>

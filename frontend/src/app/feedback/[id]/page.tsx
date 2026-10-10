@@ -1,7 +1,12 @@
 import { FeedbackCard } from "@/components/board";
-import { AddComment, CommentList, DetailHeader } from "@/components/feedback";
+import {
+  AddComment,
+  CommentList,
+  Conversation,
+  DetailHeader,
+} from "@/components/feedback";
 import { openGraphBase, parseFeedbackId, SITE_NAME, twitterBase } from "@/data";
-import { getFeedbackDetail } from "@/lib";
+import { getCurrentUser, getFeedbackDetail } from "@/lib";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -45,7 +50,7 @@ export async function generateMetadata({
 }
 
 export default async function FeedbackDetailPage({ params }: DetailPageProps) {
-  const detail = await load(params);
+  const [detail, viewer] = await Promise.all([load(params), getCurrentUser()]);
 
   if (!detail) {
     notFound();
@@ -57,13 +62,11 @@ export default async function FeedbackDetailPage({ params }: DetailPageProps) {
 
       <FeedbackCard feedback={detail} heading="h1" linked={false} />
 
-      <CommentList
-        id={detail.id}
-        count={detail.commentCount}
-        comments={detail.comments}
-      />
+      <Conversation id={detail.id} viewer={viewer} comments={detail.comments}>
+        <CommentList />
 
-      <AddComment id={detail.id} />
+        <AddComment />
+      </Conversation>
     </main>
   );
 }

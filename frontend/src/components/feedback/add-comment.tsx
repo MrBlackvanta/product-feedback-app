@@ -1,30 +1,18 @@
 "use client";
 
-import { postComment } from "@/lib/actions";
-import { useActionState, useState } from "react";
+import { COMMENT_LIMIT } from "@/data";
+import { useState } from "react";
+import { useConversation } from "./conversation";
+import submitOnCtrlEnter from "./ctrl-enter";
 
-const LIMIT = 250;
-
-export default function AddComment({ id }: { id: number }) {
+export default function AddComment() {
+  const { comment } = useConversation();
   const [content, setContent] = useState("");
+  const [attempts, setAttempts] = useState(0);
 
-  const [error, submit, pending] = useActionState<string | null, FormData>(
-    async (_previous, data) => {
-      const value = String(data.get("comment") ?? "").trim();
-
-      if (!value) {
-        return "Write a comment before posting.";
-      }
-
-      await postComment(id, value);
-      setContent("");
-
-      return null;
-    },
-    null,
-  );
-
-  const left = LIMIT - content.length;
+  const error =
+    attempts > 0 && !content.trim() ? "Write a comment before posting." : "";
+  const left = COMMENT_LIMIT - content.length;
 
   return (
     <section aria-labelledby="add-comment" className="v-comments-card">
@@ -32,7 +20,20 @@ export default function AddComment({ id }: { id: number }) {
         Add Comment
       </h2>
 
-      <form action={submit}>
+      <form
+        onSubmit={(submitted) => {
+          submitted.preventDefault();
+          setAttempts(attempts + 1);
+
+          const written = content.trim();
+
+          if (!written) return;
+
+          comment(written);
+          setContent("");
+          setAttempts(0);
+        }}
+      >
         <label htmlFor="comment" className="sr-only">
           Add a comment
         </label>
@@ -41,8 +42,9 @@ export default function AddComment({ id }: { id: number }) {
           id="comment"
           name="comment"
           value={content}
-          onChange={(event) => setContent(event.target.value)}
-          maxLength={LIMIT}
+          onChange={(changed) => setContent(changed.target.value)}
+          onKeyDown={submitOnCtrlEnter}
+          maxLength={COMMENT_LIMIT}
           placeholder="Type your comment here"
           aria-invalid={error ? "true" : undefined}
           aria-describedby={error ? "comment-error" : "comment-left"}
@@ -51,7 +53,7 @@ export default function AddComment({ id }: { id: number }) {
 
         {error && (
           <p
-            key={error}
+            key={attempts}
             id="comment-error"
             role="alert"
             className="v-field-error"
@@ -68,7 +70,7 @@ export default function AddComment({ id }: { id: number }) {
             {`${left} characters left`}
           </p>
 
-          <button type="submit" disabled={pending} className="v-btn-accent">
+          <button type="submit" className="v-btn-accent">
             Post Comment
           </button>
         </div>

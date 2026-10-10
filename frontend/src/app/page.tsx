@@ -8,6 +8,7 @@ import {
 } from "@/components/board";
 import { DEFAULT_SORT, isCategory, isSort, selectSuggestions } from "@/data";
 import { getFeedback } from "@/lib";
+import type { CSSProperties } from "react";
 
 type HomePageProps = {
   searchParams: Promise<{ category?: string; sort?: string }>;
@@ -36,9 +37,9 @@ export default async function HomePage({ searchParams }: HomePageProps) {
         {suggestions.length === 0 ? (
           <EmptyFeedback />
         ) : (
-          <ol className="v-suggestion-list">
-            {suggestions.map((item) => (
-              <li key={item.id}>
+          <ol key={`${category}-${sort}`} className="v-suggestion-list">
+            {suggestions.map((item, place) => (
+              <li key={item.id} style={{ "--place": place } as CSSProperties}>
                 <FeedbackCard feedback={item} />
               </li>
             ))}
