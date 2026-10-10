@@ -18,7 +18,7 @@ export default function FeedbackCard({
   const { id, title, description, category, upvotes, commentCount } = feedback;
 
   return (
-    <article className="v-feedback-card">
+    <article data-vt-card={id} className="v-feedback-card">
       <UpvoteButton
         id={id}
         title={title}

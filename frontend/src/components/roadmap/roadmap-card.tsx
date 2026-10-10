@@ -12,7 +12,7 @@ export default function RoadmapCard({ item }: { item: RoadmapItem }) {
     item;
 
   return (
-    <article className="v-roadmap-card">
+    <article data-vt-card={id} className="v-roadmap-card">
       <span
         aria-hidden="true"
         className={`absolute inset-x-0 top-0 h-1.5 ${STATUS_BG[status]}`}

@@ -66,6 +66,29 @@ body {
   @apply bg-page text-ink;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 200ms;
+  }
+
+  ::view-transition-group(v-feedback-card) {
+    animation-duration: 420ms;
+    animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  ::view-transition-old(v-feedback-card),
+  ::view-transition-new(v-feedback-card) {
+    block-size: 100%;
+    object-fit: cover;
+  }
+
+  ::view-transition-group(v-status-bar) {
+    animation-duration: 300ms;
+    animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+  }
+}
+
 @utility v-focus-ring {
   &:focus-visible {
     outline: 2px solid var(--color-action);
@@ -292,10 +315,53 @@ body {
   &[aria-pressed="true"] svg {
     @apply text-white;
   }
+
+  @media (prefers-reduced-motion: no-preference) {
+    & svg {
+      transition: translate 150ms;
+    }
+
+    &:active svg {
+      translate: 0 -2px;
+    }
+  }
 }
 
 @utility v-upvote-stacked {
   @apply h-auto w-10 flex-col gap-1.75 px-0 pt-3 pb-2;
+}
+
+@utility v-upvote-count {
+  display: block;
+  overflow: hidden;
+
+  & > span {
+    display: block;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    &[data-roll="up"] > span {
+      animation: v-roll-up 240ms cubic-bezier(0.32, 0.72, 0, 1);
+    }
+
+    &[data-roll="down"] > span {
+      animation: v-roll-down 240ms cubic-bezier(0.32, 0.72, 0, 1);
+    }
+  }
+}
+
+@keyframes v-roll-up {
+  from {
+    translate: 0 100%;
+    opacity: 0;
+  }
+}
+
+@keyframes v-roll-down {
+  from {
+    translate: 0 -100%;
+    opacity: 0;
+  }
 }
 
 @utility v-roadmap {
@@ -331,6 +397,7 @@ body {
 
   &[aria-current]::after {
     content: "";
+    view-transition-name: v-status-bar;
     @apply bg-accent absolute inset-x-0 bottom-0 h-1;
   }
 

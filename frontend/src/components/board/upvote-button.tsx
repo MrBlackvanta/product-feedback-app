@@ -3,7 +3,12 @@
 import { ArrowUpIcon } from "@/components/icons";
 import { castUpvote } from "@/lib/actions";
 import { hasUpvoted, setUpvoted, subscribeToUpvotes } from "@/lib/upvoted";
-import { useOptimistic, useSyncExternalStore, useTransition } from "react";
+import {
+  useOptimistic,
+  useState,
+  useSyncExternalStore,
+  useTransition,
+} from "react";
 
 type UpvoteButtonProps = {
   id: number;
@@ -28,9 +33,12 @@ export default function UpvoteButton({
     (current: number, delta: number) => current + delta,
   );
   const [, startTransition] = useTransition();
+  const [roll, setRoll] = useState<"up" | "down">();
 
   function toggle() {
     const delta = mine ? -1 : 1;
+
+    setRoll(delta > 0 ? "up" : "down");
 
     startTransition(async () => {
       addOptimistic(delta);
@@ -47,7 +55,9 @@ export default function UpvoteButton({
       className={`v-upvote ${className}`}
     >
       <ArrowUpIcon />
-      <span>{count}</span>
+      <span data-roll={roll} className="v-upvote-count">
+        <span key={count}>{count}</span>
+      </span>
       <span className="sr-only">{` upvotes for ${title}`}</span>
     </button>
   );

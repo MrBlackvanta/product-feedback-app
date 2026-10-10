@@ -1,6 +1,8 @@
+import { RouteTransitions } from "@/components/effects";
 import { SITE_NAME, SITE_URL, openGraphBase, twitterBase } from "@/data";
 import type { Metadata, Viewport } from "next";
 import { Jost } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
 
 const title = `${SITE_NAME} | Feedback Board`;
@@ -36,7 +38,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${jost.variable} antialiased`}>
-      <body>{children}</body>
+      <body>
+        <Suspense>
+          <RouteTransitions />
+        </Suspense>
+
+        {children}
+      </body>
     </html>
   );
 }
